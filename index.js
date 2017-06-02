@@ -10,22 +10,55 @@ var logData = function (data) {
 	console.log(data.name + " found " + data.ans + " answer(s). Took " + data.timeDiff + " seconds.");
 }
 
+var logDatas = function (datas) {
+	for (var i = 0; i < datas.length; i++) {
+		var data = datas[i];
+		console.log(data.name + " found " + data.ans + " answer(s) for " + data.in + ". Took " + data.timeDiff + " seconds.");
+	}
+}
+
+var range = function (start, end) {
+	var foo = [];
+	for (var i = start; i <= end; i++) {
+		foo.push(i);
+	}
+	return foo;
+}
+
+var getArray = function (start, end) {
+	if (isNaN(start) || isNaN(end)) {
+		console.log("Start and End must be numbers!");
+		return;
+	}
+	var inNums = range(start, end);
+
+	const a = new Parallel(inNums).require({ fn: getSeqSumFor, name: 'getSeqSumFor' }).map(function (data) { var out = getSeqSumFor(data); out.in = data; return out; }).then(logDatas);
+
+	const b = new Parallel(inNums).require({ fn: getSeqSum, name: 'getSeqSum' }).map(function (data) { var out = getSeqSum(data); out.in = data; return out; }).then(logDatas);
+
+	const c = new Parallel(inNums).require({ fn: getSeqSumForDown, name: 'getSeqSumForDown' }).map(function (data) { var out = getSeqSumForDown(data); out.in = data; return out; }).then(logDatas);
+
+	const d = new Parallel(inNums).require({ fn: getSeqSumDown, name: 'getSeqSumDown' }).map(function (data) { var out = getSeqSumDown(data); out.in = data; return out; }).then(logDatas)
+}
+
 var getInput = function () {
 	rl.question('Input Number: ', (answer) => {
 		var inNum = parseInt(answer);
 
 		if (isNaN(inNum)) {
 			console.log('You must enter a number!');
+			return;
 		}
 
 		rl.close();
+
 		const a = new Parallel(inNum).require({ fn: getSeqSumFor, name: 'getSeqSumFor' }).spawn(function (data) { return getSeqSumFor(data); }).then(logData);
 
-		const b = new Parallel(inNum).require({ fn: getSeqSum, name: 'getSeqSum' }).spawn(getSeqSum).then(logData);
+		const b = new Parallel(inNum).require({ fn: getSeqSum, name: 'getSeqSum' }).spawn(function (data) { return getSeqSum(data); }).then(logData);
 
-		const c = new Parallel(inNum).require({ fn: getSeqSumForDown, name: 'getSeqSumForDown' }).spawn(getSeqSumForDown).then(logData);
+		const c = new Parallel(inNum).require({ fn: getSeqSumForDown, name: 'getSeqSumForDown' }).spawn(function (data) { return getSeqSumForDown(data); }).then(logData);
 
-		const d = new Parallel(inNum).require({ fn: getSeqSumDown, name: 'getSeqSumDown' }).spawn(getSeqSumDown).then(logData)
+		const d = new Parallel(inNum).require({ fn: getSeqSumDown, name: 'getSeqSumDown' }).spawn(function (data) { return getSeqSumDown(data); }).then(logData)
 	});
 }
 
@@ -189,5 +222,9 @@ var getSeqSumForDown = function (inNum) {
 	return { name: 'ForDown', ans: ans, timeDiff: timeDiff };
 }
 
-
-getInput();
+if (process.argv[2]) {
+	getArray(process.argv[2], process.argv[3]);
+}
+else {
+	getInput();
+}
