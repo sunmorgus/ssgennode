@@ -6,13 +6,8 @@ const rl = readline.createInterface({
 	output: process.stdout
 });
 
-var calcTime = function (s, e) {
-	var timeDiff = e - s;
-	timeDiff /= 1000;
-	//var seconds = Math.round(timeDiff % 60);
-
-	//console.log("Took " + timeDiff + " seconds");
-	return timeDiff;
+var logData = function (data) {
+	console.log(data.name + " found " + data.ans + " answer(s). Took " + data.timeDiff + " seconds.");
 }
 
 var getInput = function () {
@@ -24,25 +19,13 @@ var getInput = function () {
 		}
 
 		rl.close();
-		const a = new Parallel(inNum).require({ fn: getSeqSumFor, name: 'getSeqSumFor' }).spawn(function (data) { return getSeqSumFor(data); }).then((data) => {
-			var t = calcTime(data.s, data.e);
-			console.log(data.name + " found " + data.ans + " answer(s). Took " + t + " seconds.");
-		});
+		const a = new Parallel(inNum).require({ fn: getSeqSumFor, name: 'getSeqSumFor' }).spawn(function (data) { return getSeqSumFor(data); }).then(logData);
 
-		const b = new Parallel(inNum).require({ fn: getSeqSum, name: 'getSeqSum' }).spawn(getSeqSum).then((data) => {
-			var t = calcTime(data.s, data.e);
-			console.log(data.name + " found " + data.ans + " answer(s). Took " + t + " seconds.");
-		});
+		const b = new Parallel(inNum).require({ fn: getSeqSum, name: 'getSeqSum' }).spawn(getSeqSum).then(logData);
 
-		const c = new Parallel(inNum).require({ fn: getSeqSumForDown, name: 'getSeqSumForDown' }).spawn(getSeqSumForDown).then((data) => {
-			var t = calcTime(data.s, data.e);
-			console.log(data.name + " found " + data.ans + " answer(s). Took " + t + " seconds.");
-		});
+		const c = new Parallel(inNum).require({ fn: getSeqSumForDown, name: 'getSeqSumForDown' }).spawn(getSeqSumForDown).then(logData);
 
-		const d = new Parallel(inNum).require({ fn: getSeqSumDown, name: 'getSeqSumDown' }).spawn(getSeqSumDown).then((data) => {
-			var t = calcTime(data.s, data.e);
-			console.log(data.name + " found " + data.ans + " answer(s). Took " + t + " seconds.");
-		})
+		const d = new Parallel(inNum).require({ fn: getSeqSumDown, name: 'getSeqSumDown' }).spawn(getSeqSumDown).then(logData)
 	});
 }
 
@@ -78,7 +61,9 @@ var getSeqSum = function (inNum) {
 	var e = new Date();
 	//var t = global.env.calcTime(s, e);
 	// console.log("RedUp found " + ans + " answer(s). Took " + t + " seconds.");
-	return { name: 'RedUp', ans: ans, s: s, e: e };
+	var timeDiff = e - s;
+	timeDiff /= 1000;
+	return { name: 'RedUp', ans: ans, timeDiff: timeDiff };
 }
 
 var getSeqSumDown = function (inNum) {
@@ -114,7 +99,9 @@ var getSeqSumDown = function (inNum) {
 	hold = hold.slice(1, hold.length);
 	var e = new Date();
 	// var t = global.env.calcTime(s, e);
-	return { name: 'RedDown', ans: ans, s: s, e: e };
+	var timeDiff = e - s;
+	timeDiff /= 1000;
+	return { name: 'RedDown', ans: ans, timeDiff: timeDiff };
 }
 
 var getSeqSumFor = function (inNum) {
@@ -154,7 +141,9 @@ var getSeqSumFor = function (inNum) {
 	var e = new Date();
 	// var t = global.env.calcTime(s, e);
 	// console.log("ForUp found " + ans + " answer(s). Took " + t + " seconds.");
-	return { name: 'ForUp', ans: ans, s: s, e: e };
+	var timeDiff = e - s;
+	timeDiff /= 1000;
+	return { name: 'ForUp', ans: ans, timeDiff: timeDiff };
 }
 
 
@@ -195,7 +184,9 @@ var getSeqSumForDown = function (inNum) {
 	var e = new Date();
 	// var t = global.env.calcTime(s, e);
 	// console.log("ForDown found " + ans + " answer(s). Took " + t + " seconds.");
-	return { name: 'ForDown', ans: ans, s: s, e: e };
+	var timeDiff = e - s;
+	timeDiff /= 1000;
+	return { name: 'ForDown', ans: ans, timeDiff: timeDiff };
 }
 
 
