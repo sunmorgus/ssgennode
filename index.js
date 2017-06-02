@@ -1,4 +1,5 @@
 const readline = require('readline');
+const Parallel = require('paralleljs');
 
 const rl = readline.createInterface({
   input: process.stdin,
@@ -23,14 +24,15 @@ var getInput = function(){
 		}
 		
 		rl.close();
+		const p = new Parallel([inNum], { env: { calcTime: calcTime}});
 		
-		getSeqSumFor(inNum);
+		p.spawn(getSeqSumFor);
 		
-		getSeqSum(inNum);
+		p.spawn(getSeqSum);
 		
-		getSeqSumForDown(inNum);
+		p.spawn(getSeqSumForDown);
 		
-		getSeqSumDown(inNum);		
+		p.spawn(getSeqSumDown);
 	});
 }
 
@@ -64,7 +66,7 @@ var getSeqSum = function(inNum){
 	} while (!found);
 
 	var e = new Date();
-	var t = calcTime(s, e);
+	var t = global.env.calcTime(s, e);
 	console.log("RedUp found " + ans + " answer(s). Took " + t + " seconds.");
 }
 
@@ -100,7 +102,7 @@ var getSeqSumDown = function(inNum){
 
 	hold = hold.slice(1, hold.length);
 	var e = new Date();
-	var t = calcTime(s, e);			
+	var t = global.env.calcTime(s, e);			
 	console.log("RedDown found " + ans + " answer(s). Took " + t + " seconds.");
 }
 
@@ -139,7 +141,8 @@ var getSeqSumFor = function(inNum){
 	} while (!found);
 
 	var e = new Date();
-	var t = calcTime(s, e);		
+	console.log(global);
+	var t = global.env.calcTime(s, e);		
 	console.log("ForUp found " + ans + " answer(s). Took " + t + " seconds.");
 }
 
@@ -179,7 +182,7 @@ var getSeqSumForDown = function(inNum){
 		
 	hold = hold.slice(1, hold.length);
 	var e = new Date();
-	var t = calcTime(s, e);
+	var t = global.env.calcTime(s, e);
 	console.log("ForDown found " + ans + " answer(s). Took " + t + " seconds.");
 }
 

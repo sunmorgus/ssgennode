@@ -3,5 +3,8 @@
   "version": "1.0.0",
   "main": "index.js",
   "author": "Nick DeMayo <sunmorgus@gmail.com>",
-  "license": "MIT"
+  "license": "MIT",
+  "dependencies": {
+    "paralleljs": "^0.2.1"
+  }
 }
